@@ -1,0 +1,34 @@
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+void* thread_func(void* arg) {
+    printf("tiểu trình con. Đang xử lý công việc...\n");
+    sleep(2); 
+    printf("Tiểu trình con xong việc và tự động xóa bộ nhớ!\n");
+    pthread_exit(NULL);
+}
+
+int main() {
+    pthread_t tid;
+    pthread_attr_t attr;
+
+    pthread_attr_init(&attr);
+
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+
+    printf("Tiến trình cha: Đang tạo tiểu trình detached...\n");
+    
+    if (pthread_create(&tid, &attr, thread_func, NULL) != 0) {
+        printf("Tạo tiểu trình thất bại\n");
+        exit(1);
+    }
+
+    pthread_attr_destroy(&attr);
+
+    sleep(3);
+    printf("Tiến trình cha: Hoàn thành và thoát.\n");
+
+    return 0;
+}
